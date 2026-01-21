@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cloudblitz NACH EMI</title>
+
+<!-- PDF Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<style>
+:root{
+  --primary:#0b3c5d;
+  --secondary:#328cc1;
+  --bg:#f4f8fc;
+  --success:#1e7f3b;
+}
+
+body{
+  margin:0;
+  font-family:"Poppins","Segoe UI",Arial,sans-serif;
+  background:var(--bg);
+}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,var(--primary),var(--secondary));
+  color:#fff;
+  padding:35px;
+  text-align:center;
+}
+
+.header h1{
+  margin:0;
+  font-size:36px;
+  font-weight:800;
+  letter-spacing:2px;
+}
+
+.header span{
+  display:block;
+  margin-top:8px;
+  font-size:14px;
+  opacity:0.9;
+}
+
+/* MAIN CARD */
+.container{
+  max-width:1200px;
+  margin:-50px auto 40px;
+  padding:20px;
+}
+
+.card{
+  background:#fff;
+  border-radius:20px;
+  padding:30px;
+  box-shadow:0 20px 45px rgba(0,0,0,0.15);
+}
+
+/* FORM GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:20px;
+}
+
+label{
+  font-weight:600;
+  font-size:14px;
+  text-transform:uppercase;
+}
+
+input,select{
+  width:100%;
+  padding:13px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+
+input:focus,select:focus{
+  outline:none;
+  border-color:var(--secondary);
+}
+
+/* SUMMARY */
+.summary{
+  margin-top:30px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:20px;
+}
+
+.box{
+  background:#f7fbff;
+  border-left:6px solid var(--primary);
+  padding:18px;
+  border-radius:14px;
+}
+
+.box h4{
+  margin:0;
+  font-size:13px;
+  color:#666;
+  letter-spacing:1px;
+}
+
+.box p{
+  margin:8px 0 0;
+  font-size:26px;
+  font-weight:800;
+}
+
+.emi{
+  color:var(--success);
+}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:35px;
+}
+
+th{
+  background:var(--primary);
+  color:#fff;
+  padding:14px;
+  font-size:14px;
+}
+
+td{
+  padding:12px;
+  text-align:center;
+  border-bottom:1px solid #e0e0e0;
+}
+
+tr:hover{
