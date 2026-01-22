@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cloudblitz NACH EMI</title>
+
+<style>
+:root{
+  --bg:#0b0f1a;
+  --card:#14182a;
+  --accent:#7b6cff;
+  --text:#ffffff;
+  --muted:#a1a1b5;
+}
+
+body{
+  margin:0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background:radial-gradient(circle at top, #1a1f3c, var(--bg));
+  color:var(--text);
+}
+
+.header{
+  text-align:center;
+  padding:40px 20px;
+}
+
+.header h1{
+  margin:0;
+  font-size:42px;
+  color:var(--accent);
+  letter-spacing:1px;
+}
+
+.header p{
+  margin-top:10px;
+  color:var(--muted);
+}
+
+.container{
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:30px;
+}
+
+.card{
+  background:linear-gradient(145deg,#161a30,#0f1325);
+  border-radius:20px;
+  padding:28px;
+  box-shadow:0 20px 50px rgba(0,0,0,.6);
+}
+
+label{
+  display:block;
+  margin-top:15px;
+  font-size:14px;
+  color:var(--muted);
+}
+
+input,select{
+  width:100%;
+  padding:14px;
+  margin-top:6px;
+  border-radius:14px;
+  border:none;
+  background:#0e1222;
+  color:#fff;
+  font-size:15px;
+}
+
+input:focus,select:focus{
+  outline:2px solid var(--accent);
+}
+
+.actions{
+  margin-top:22px;
+  display:flex;
+  gap:15px;
+}
+
+button{
+  flex:1;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.primary{
+  background:var(--accent);
+  color:#fff;
+}
+
+.secondary{
+  background:#1b1f38;
+  color:#fff;
+}
+
+.summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.box{
+  background:#0f1325;
+  padding:22px;
+  border-radius:18px;
+  text-align:center;
+}
+
+.box span{
+  display:block;
+  font-size:13px;
+  color:var(--muted);
+}
+
+.box strong{
+  font-size:28px;
+  margin-top:10px;
+  display:block;
+  color:var(--accent);
+}
+
+.schedule{
+  margin-top:22px;
+  background:#0f1325;
+  padding:22px;
+  border-radius:18px;
+}
+
+.row{
+  display:flex;
+  justify-content:space-between;
+  margin-top:10px;
+  font-size:18px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:18px;
+}
+
+th,td{
+  padding:12px;
+  text-align:center;
+  border-bottom:1px solid #2b2f55;
+}
+
+th{
+  color:var(--accent);
+  font-size:14px;
+}
+
+.note{
+  margin-top:12px;
+  font-size:12px;
+  color:var(--muted);
+}
+
+@media(max-width:900px){
+  .container{
+    grid-template-columns:1fr;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h1>Cloudblitz NACH EMI</h1>
+  <p>World-class EMI Calculator with Auto Date Rules</p>
+</div>
+
+<div class="container">
+
+<!-- LEFT -->
+<div class="card">
+  <label>Total Course Fee</label>
+  <input type="number" id="totalFee" placeholder="60000">
+
+  <label>Upfront / Down Payment</label>
+  <input type="number" id="downPayment" placeholder="10000">
+
+  <label>Admission Date</label>
+  <input type="date" id="admissionDate">
+
+  <label>Tenure (Months)</label>
+  <select id="tenure">
+    <option>2</option><option>3</option><option>4</option>
+    <option>5</option><option selected>6</option>
+    <option>7</option><option>8</option><option>9</option>
+  </select>
+
+  <div class="actions">
+    <button class="primary" onclick="calculate()">Calculate EMI</button>
+    <button class="secondary" onclick="resetAll()">Reset</button>
+  </div>
+</div>
+
+<!-- RIGHT -->
+<div>
+  <div class="summary">
+    <div class="box">
+      <span>Loan Amount</span>
+      <strong>₹ <span id="loanAmt">0</span></strong>
+    </div>
+    <div class="box">
+      <span>Monthly EMI</span>
+      <strong>₹ <span id="emi">0</span></strong>
+    </div>
+  </div>
+
+  <div class="schedule">
+    <div class="row">
+      <div>Duration</div>
+      <div><span id="tenureMonths">6</span> Months</div>
+    </div>
+    <div class="row">
+      <div>Total Amount</div>
+      <div>₹ <span id="totalPay">0</span></div>
+    </div>
+
+    <h3 style="margin-top:18px;">EMI Schedule</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>EMI No</th>
+          <th>EMI Date</th>
+          <th>Amount (₹)</th>
+        </tr>
+      </thead>
+      <tbody id="emiTable"></tbody>
+    </table>
+
+    <div class="note">
+      * EMI date auto-decided (7th / 15th) based on admission date
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+function calculate(){
+  let total = Number(totalFee.value);
+  let down = Number(downPayment.value);
+  let months = Number(tenure.value);
+  let adm = admissionDate.value;
+  let table = emiTable;
+
+  table.innerHTML = "";
+
+  if(down > total) down = total;
+
+  let loan = total - down;
+  let emiAmt = loan / months;
+
+  loanAmt.innerText = loan.toFixed(0);
+  emi.innerText = emiAmt.toFixed(0);
+  tenureMonths.innerText = months;
+  totalPay.innerText = loan.toFixed(0);
+
+  let admDate = new Date(adm);
+  let debitDay = (admDate.getDate() <= 20) ? 7 : 15;
+
+  let date = new Date(admDate);
+  date.setMonth(date.getMonth() + 1);
+  date.setDate(debitDay);
+
+  for(let i=1;i<=months;i++){
+    let d = String(date.getDate()).padStart(2,"0");
+    let m = date.toLocaleString("en-US",{month:"short"});
+    let y = date.getFullYear();
+
+    table.innerHTML += `
+      <tr>
+        <td>${i}</td>
+        <td>${d} ${m} ${y}</td>
+        <td>₹ ${emiAmt.toFixed(0)}</td>
+      </tr>
+    `;
+    date.setMonth(date.getMonth()+1);
+  }
+}
+
+function resetAll(){
+  totalFee.value="";
+  downPayment.value="";
+  admissionDate.value="";
+  tenure.value="6";
+  loanAmt.innerText=0;
+  emi.innerText=0;
+  tenureMonths.innerText=6;
+  totalPay.innerText=0;
+  emiTable.innerHTML="";
+}
+</script>
+
+</body>
+</html>
