@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cloudblitz NACH EMI</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#f4f8fc;
+}
+
+.header{
+  background:#0b3c5d;
+  color:white;
+  padding:20px;
+  text-align:center;
+}
+
+.card{
+  max-width:600px;
+  margin:30px auto;
+  background:white;
+  padding:20px;
+  border-radius:10px;
+  box-shadow:0 5px 15px rgba(0,0,0,0.2);
+}
+
+label{
+  font-weight:bold;
+  display:block;
+  margin-top:10px;
+}
+
+input,select{
+  width:100%;
+  padding:8px;
+  margin-top:5px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:20px;
+}
+
+th,td{
+  border:1px solid #ccc;
+  padding:8px;
+  text-align:center;
+}
+
+th{
+  background:#0b3c5d;
+  color:white;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <h2>CLOUDBLITZ NACH EMI</h2>
+</div>
+
+<div class="card">
+
+<label>Total Fee</label>
+<input type="number" id="totalFee">
+
+<label>Upfront Paid</label>
+<input type="number" id="upfront">
+
+<label>Admission Date</label>
+<input type="date" id="admissionDate">
+
+<label>Tenure (Months)</label>
+<select id="months">
+  <option value="">Select</option>
+  <option>1</option><option>2</option><option>3</option>
+  <option>4</option><option>5</option><option>6</option>
+</select>
+
+<button onclick="calculate()" style="margin-top:15px;width:100%;padding:10px;">
+CALCULATE EMI
+</button>
+
+<p><b>Pending Amount:</b> ₹ <span id="pending">0</span></p>
+<p><b>Monthly EMI:</b> ₹ <span id="emi">0</span></p>
+
+<table>
+<thead>
+<tr>
+  <th>EMI No</th>
+  <th>EMI Date</th>
+  <th>Amount</th>
+</tr>
+</thead>
+<tbody id="emiTable"></tbody>
+</table>
+
+</div>
+
+<script>
+function calculate(){
+  var total = Number(document.getElementById("totalFee").value);
+  var upfront = Number(document.getElementById("upfront").value);
+  var months = Number(document.getElementById("months").value);
+  var adm = document.getElementById("admissionDate").value;
+  var table = document.getElementById("emiTable");
+
+  table.innerHTML = "";
+
+  if(upfront > total) upfront = total;
+
+  var pending = total - upfront;
+  document.getElementById("pending").innerText = pending;
+
+  if(!months || !adm) return;
+
+  var emi = pending / months;
+  document.getElementById("emi").innerText = emi.toFixed(2);
+
+  var d = new Date(adm);
+  var debitDay = (d.getDate() <= 20) ? 7 : 15;
+
+  d.setMonth(d.getMonth()+1);
+  d.setDate(debitDay);
+
+  for(var i=1;i<=months;i++){
+    var row = table.insertRow();
+    row.insertCell(0).innerText = i;
+    row.insertCell(1).innerText = d.toDateString();
+    row.insertCell(2).innerText = emi.toFixed(2);
+    d.setMonth(d.getMonth()+1);
+  }
+}
+</script>
+
+</body>
+</html>
